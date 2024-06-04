@@ -39,6 +39,29 @@ def draw_symbol(x_,y_,player):
         pygame.draw.lines(frame, color, True, [(p1-RADIUS,p2+RADIUS),(p1+RADIUS,p2-RADIUS)], width=LINE_WIDTH)
 
 def check_win():
+    #vertical
+    if board[0][0] == board[0][1] == board[0][2] and board[0][0] != None:
+        return board[0][0]
+    elif board[1][0] == board[1][1] == board[1][2] and board[1][0] != None:
+        return board[1][0]
+    elif board[2][0] == board[2][1] == board[2][2] and board[2][0] != None:
+        return board[2][0]
+
+    #horizontal
+    elif board[0][0] == board[1][0] == board[2][0] and board[1][0] != None:
+        return board[0][0]
+    elif board[0][1] == board[1][1] == board[2][1] and board[1][1] != None:
+        return board[0][1]
+    elif board[0][2] == board[1][2] == board[2][2] and board[1][2] != None:
+        return board[0][2]
+
+    #diagonal
+    elif board[0][0] == board[1][1] == board[2][2] and board[1][1] != None:
+        return board[0][0]
+    elif board[0][2] == board[1][1] == board[2][0] and board[1][1] != None:
+        return board[0][2]
+
+def draw_win_line():
     pass
 
 running = True
@@ -56,6 +79,7 @@ while running:
                 board[x_][y_] = player
                 print(board)
                 draw_symbol(x_,y_,player)
+                print(check_win())
                 if player == 'X':
                     player = 'O'
                 else:
