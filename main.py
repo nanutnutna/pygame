@@ -11,6 +11,10 @@ RADIUS = SCALE/2*(3/4)
 LINE_WIDTH = 10
 frame = pygame.display.set_mode((WIDTH,HIGHT))
 
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 128)
+
 board = [[None]*CH for _ in range(CH)]
 
 def empty(x,y):
@@ -39,30 +43,46 @@ def draw_symbol(x_,y_,player):
         pygame.draw.lines(frame, color, True, [(p1-RADIUS,p2+RADIUS),(p1+RADIUS,p2-RADIUS)], width=LINE_WIDTH)
 
 def check_win():
+    color = (255,0,0)
+    WIN_LINE=15
     #vertical
     if board[0][0] == board[0][1] == board[0][2] and board[0][0] != None:
-        return board[0][0]
+        pygame.draw.line(frame, color,(HIGHT//6,0),(HIGHT//6,WIDTH), width=WIN_LINE)
+        return True
     elif board[1][0] == board[1][1] == board[1][2] and board[1][0] != None:
-        return board[1][0]
+        pygame.draw.line(frame, color,(HIGHT*3//6,0),(HIGHT*3//6,WIDTH),width=WIN_LINE)
+        return True
     elif board[2][0] == board[2][1] == board[2][2] and board[2][0] != None:
-        return board[2][0]
+        pygame.draw.line(frame, color,(HIGHT*5//6,0),(HIGHT*5//6,WIDTH),width=WIN_LINE)
+        return True
 
     #horizontal
     elif board[0][0] == board[1][0] == board[2][0] and board[1][0] != None:
-        return board[0][0]
+        pygame.draw.line(frame,color, (0,WIDTH//6),(HIGHT,WIDTH//6), width=WIN_LINE)
+        return True
     elif board[0][1] == board[1][1] == board[2][1] and board[1][1] != None:
-        return board[0][1]
+        pygame.draw.line(frame,color, (0,WIDTH*3//6),(HIGHT,WIDTH*3//6), width=WIN_LINE)
+        return True
     elif board[0][2] == board[1][2] == board[2][2] and board[1][2] != None:
-        return board[0][2]
+        pygame.draw.line(frame,color, (0,WIDTH*5//6),(HIGHT,WIDTH*5//6), width=WIN_LINE)
+        return True
 
     #diagonal
     elif board[0][0] == board[1][1] == board[2][2] and board[1][1] != None:
-        return board[0][0]
+        pygame.draw.line(frame,color, (0,0),(HIGHT,WIDTH), width=WIN_LINE)
+        return True
     elif board[0][2] == board[1][1] == board[2][0] and board[1][1] != None:
-        return board[0][2]
+        pygame.draw.line(frame,color,(0,HIGHT),(WIDTH,0), width=WIN_LINE)
+        return True
+    return False
 
-def draw_win_line():
+
+def display_win():
     pass
+
+def restart():
+    pass
+
 
 running = True
 draw_grid()
@@ -79,7 +99,8 @@ while running:
                 board[x_][y_] = player
                 print(board)
                 draw_symbol(x_,y_,player)
-                print(check_win())
+                if check_win():
+                    print('WIN')
                 if player == 'X':
                     player = 'O'
                 else:
