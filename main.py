@@ -1,4 +1,5 @@
 import pygame
+import sys
 
 pygame.init()
 pygame.display.set_caption("Tic-Tac-Toe")
@@ -14,11 +15,13 @@ frame = pygame.display.set_mode((WIDTH,HIGHT))
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 128)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 
-board = [[None]*CH for _ in range(CH)]
+BOARD = [[None]*CH for _ in range(CH)]
 
 def empty(x,y):
-    if board[x][y] == None:
+    if BOARD[x][y] == None:
         return True
     return False
 
@@ -34,75 +37,101 @@ def draw_grid():
 def draw_symbol(x_,y_,player):
     point = {(0,0):(1,1),(0,1):(1,3),(0,2):(1,5),(1,0):(3,1),(1,1):(3,3),(1,2):(3,5),(2,0):(5,1),(2,1):(5,3),(2,2):(5,5)}
     x,y = point[(x_,y_)]
-    color = (255,255,255)
+    o_color = (255,0,255)
+    x_color = (0,204,204)
     if player == 'O':
-        pygame.draw.circle(frame,color,(HIGHT*x//6,WIDTH*y//6),width=LINE_WIDTH,radius=RADIUS)
+        pygame.draw.circle(frame, o_color, (HIGHT*x//6,WIDTH*y//6), width=LINE_WIDTH, radius=RADIUS)
     else:
         p1,p2 = (HIGHT*x//6,WIDTH*y//6)
-        pygame.draw.lines(frame, color, True, [(p1-RADIUS,p2-RADIUS),(p1+RADIUS,p2+RADIUS)], width=LINE_WIDTH)
-        pygame.draw.lines(frame, color, True, [(p1-RADIUS,p2+RADIUS),(p1+RADIUS,p2-RADIUS)], width=LINE_WIDTH)
+        pygame.draw.lines(frame, x_color, True, [(p1-RADIUS,p2-RADIUS),(p1+RADIUS,p2+RADIUS)], width=LINE_WIDTH)
+        pygame.draw.lines(frame, x_color, True, [(p1-RADIUS,p2+RADIUS),(p1+RADIUS,p2-RADIUS)], width=LINE_WIDTH)
 
 def check_win():
     color = (255,0,0)
     WIN_LINE=15
     #vertical
-    if board[0][0] == board[0][1] == board[0][2] and board[0][0] != None:
+    if BOARD[0][0] == BOARD[0][1] == BOARD[0][2] and BOARD[0][0] != None:
         pygame.draw.line(frame, color,(HIGHT//6,0),(HIGHT//6,WIDTH), width=WIN_LINE)
         return True
-    elif board[1][0] == board[1][1] == board[1][2] and board[1][0] != None:
+    elif BOARD[1][0] == BOARD[1][1] == BOARD[1][2] and BOARD[1][0] != None:
         pygame.draw.line(frame, color,(HIGHT*3//6,0),(HIGHT*3//6,WIDTH),width=WIN_LINE)
         return True
-    elif board[2][0] == board[2][1] == board[2][2] and board[2][0] != None:
+    elif BOARD[2][0] == BOARD[2][1] == BOARD[2][2] and BOARD[2][0] != None:
         pygame.draw.line(frame, color,(HIGHT*5//6,0),(HIGHT*5//6,WIDTH),width=WIN_LINE)
         return True
 
     #horizontal
-    elif board[0][0] == board[1][0] == board[2][0] and board[1][0] != None:
+    elif BOARD[0][0] == BOARD[1][0] == BOARD[2][0] and BOARD[1][0] != None:
         pygame.draw.line(frame,color, (0,WIDTH//6),(HIGHT,WIDTH//6), width=WIN_LINE)
         return True
-    elif board[0][1] == board[1][1] == board[2][1] and board[1][1] != None:
+    elif BOARD[0][1] == BOARD[1][1] == BOARD[2][1] and BOARD[1][1] != None:
         pygame.draw.line(frame,color, (0,WIDTH*3//6),(HIGHT,WIDTH*3//6), width=WIN_LINE)
         return True
-    elif board[0][2] == board[1][2] == board[2][2] and board[1][2] != None:
+    elif BOARD[0][2] == BOARD[1][2] == BOARD[2][2] and BOARD[1][2] != None:
         pygame.draw.line(frame,color, (0,WIDTH*5//6),(HIGHT,WIDTH*5//6), width=WIN_LINE)
         return True
 
     #diagonal
-    elif board[0][0] == board[1][1] == board[2][2] and board[1][1] != None:
+    elif BOARD[0][0] == BOARD[1][1] == BOARD[2][2] and BOARD[1][1] != None:
         pygame.draw.line(frame,color, (0,0),(HIGHT,WIDTH), width=WIN_LINE)
         return True
-    elif board[0][2] == board[1][1] == board[2][0] and board[1][1] != None:
+    elif BOARD[0][2] == BOARD[1][1] == BOARD[2][0] and BOARD[1][1] != None:
         pygame.draw.line(frame,color,(0,HIGHT),(WIDTH,0), width=WIN_LINE)
         return True
     return False
 
 
-def display_win():
-    pass
+def display_win(player):
+    font = pygame.font.Font('freesansbold.ttf',size=HIGHT//8)
+    if player == 'O':
+        text = font.render('O Player WIN!!!', True, GREEN, BLUE)
+    elif player == 'X' :
+        text = font.render('X Player WIN!!!', True, GREEN, BLUE)
+    
+    textRect = text.get_rect()
+    textRect.center = (HIGHT // 2, WIDTH // 2)
+    frame.blit(text,textRect)
+
+def display_tie():
+    font = pygame.font.Font('freesansbold.ttf',size=HIGHT//8)
+    text = font.render('Tie!!!', True, GREEN, BLUE)
+    textRect = text.get_rect()
+    textRect.center = (HIGHT // 2, WIDTH // 2)
+    frame.blit(text,textRect)
+
 
 def restart():
-    pass
+    frame.fill(BLACK)
+    draw_grid()
+    for row in range(len(BOARD)):
+        for col in range(len(BOARD)):
+            BOARD[row][col] = None
 
 
-running = True
+game_over = False
 draw_grid()
 player = 'X'
-while running:
+while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
+            pygame.quit()
+            sys.exit()
+        if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
             (x,y) = event.pos
             x_,y_ = int(x//SCALE), int(y//SCALE)
-            print(x_,y_)
             if empty(x_,y_):
-                board[x_][y_] = player
-                print(board)
+                BOARD[x_][y_] = player
                 draw_symbol(x_,y_,player)
                 if check_win():
-                    print('WIN')
-                if player == 'X':
-                    player = 'O'
-                else:
-                    player = 'X'
+                    display_win(player)
+                    game_over = True
+                player = 'O' if player == 'X' else 'X'
+            else:
+                display_tie()
+                game_over = True
+        if event.type == pygame.KEYDOWN:
+            if event.unicode == 'r' or event.unicode == 'R':
+                restart()
+                game_over = False
+        
     pygame.display.update()
