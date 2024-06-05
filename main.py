@@ -10,15 +10,15 @@ CH = 3
 SCALE = WIDTH/CH
 RADIUS = SCALE/2*(3/4)
 LINE_WIDTH = 10
-frame = pygame.display.set_mode((WIDTH,HIGHT))
-
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 128)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-
 BOARD = [[None]*CH for _ in range(CH)]
+
+frame = pygame.display.set_mode((WIDTH,HIGHT))
+
 
 def empty(x,y):
     if BOARD[x][y] == None:
