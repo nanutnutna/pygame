@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 pygame.init()
 pygame.display.set_caption("Tic-Tac-Toe")
@@ -100,6 +101,17 @@ def display_tie():
     frame.blit(text,textRect)
 
 
+def player2(player):
+    if player == 'O':
+        while True:
+            x_ = random.randint(0,2)
+            y_ = random.randint(0,2)
+            if BOARD[x_][y_] is None:
+                BOARD[x_][y_] = player
+                break
+    return (x_,y_)
+                
+
 def restart():
     frame.fill(BLACK)
     draw_grid()
@@ -125,7 +137,11 @@ while True:
                 if check_win():
                     display_win(player)
                     game_over = True
-                player = 'O' if player == 'X' else 'X'
+                if player == 'X':
+                    player = 'O'
+                    p_x,p_y = player2(player)
+                    draw_symbol(p_x,p_y,player)
+                player = 'X'
             else:
                 display_tie()
                 game_over = True
