@@ -142,7 +142,7 @@ while True:
                     p_x,p_y = player2(player)
                     draw_symbol(p_x,p_y,player)
                 player = 'X'
-            else:
+            elif empty(x_,y_) and None not in BOARD:
                 display_tie()
                 game_over = True
         if event.type == pygame.KEYDOWN:
